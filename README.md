@@ -52,10 +52,9 @@ while True:
     try:
         sleep(2)
         sensor.measure()
-        print('Temperature {} C, {} % .. {}'.format(
-              sensor.temperature(),
-              sensor.humidity(),
-              sensor.buf))
+        print('Temperature {} C, {} % .. {}'.format(sensor.temperature(),
+                                                    sensor.humidity(),
+                                                    sensor.buf))
     except OSError:
         print('Failed to measure')
 ```
