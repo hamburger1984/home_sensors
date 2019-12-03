@@ -1,52 +1,61 @@
-# Prepare
+# Home Sensors
 
-Fetch stable build from https://micropython.org/download#esp32
+## Idea
 
-Erase flash and program firmware as described
+Monitor humidity and temperature using micropython on an ESP32 board.
 
-# Connect to repl
+Maybe push the measured values to a MQTT broker to fetch, display, record
+and maybe plot them. Either use some free(?) existing broker or install one on a
+raspberry pi in the local network.
 
-picocom /dev/ttyUSB0 -b115200
+### Hardware
 
-C-a, C-x to exit
+[WEMOS ESP32 board with battery holder](http://www.raspberrypiwiki.com/index.php/WEMOS_ESP32_Board_with_18650_Battery_Holder)
 
-# Take a look around
+[ADSONG AM2302 / DHT22](https://learn.adafruit.com/dht)
+
+
+### Wiring diagram
 
 ```
-import esp32
-import time
-
-def test_hall(count=100):
-    for x in range(count):
-        print(' .. {} .. {}'.format(x, esp32.hall_sensor()
-        time.sleep_ms(100)
+              +--------------+
++---------+   |              |
+|         |   | +-----+      |
+| AMS2302 |   | |     |      |
+|         |   | | +---+------+----------------+
+|         |   | | |  P22    GND               |
+|   D     |   | | |                           |
+| V A   G |   | | |      ESP32 Board          |
+| C T N N |   | | |                           |
+| C A C D |   | | |                           |
++-+-+-+-+-+   | | | VCC                       |
+  | | | |     | | +--+------------------------+
+  | | + +-----+ |    |
+  | |           |    |
+  | +-----------+    |
+  |                  |
+  +------------------+
 ```
 
 
-# Sample
+### Testing the sensor
 
-https://boneskull.com/micropython-on-esp32-part-1/
-https://boneskull.com/micropython-on-esp32-part-2/
 
-https://www.hackster.io/bucknalla/mqtt-micropython-044e77
-https://randomnerdtutorials.com/micropython-mqtt-esp32-esp8266/
-https://micropython-iot-hackathon.readthedocs.io/en/latest/mqtt.html
+```
+from machine import Pin
+from time import sleep
+import dht
 
-# More reading
+sensor = dht.DHT22(Pin(22))
 
-https://www.espressif.com/en/products/hardware/esp32/overview
-https://www.espressif.com/en/products/hardware/esp32/resources
-
-https://docs.micropython.org/en/latest/esp32/general.html
-https://docs.micropython.org/en/latest/esp32/quickref.html
-
-https://github.com/micropython/micropython
-https://github.com/micropython/micropython/tree/master/ports/esp32
-
-https://www.instructables.com/id/ESP32-With-Battery-Holder/
-
-https://randomnerdtutorials.com/esp32-esp8266-analog-readings-micropython/
-https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
-https://randomnerdtutorials.com/esp32-hall-effect-sensor/
-https://makeradvisor.com/esp32-development-boards-review-comparison/
-
+while True:
+    try:
+        sleep(2)
+        sensor.measure()
+        print('Temperature {} C, {} % .. {}'.format(
+              sensor.temperature(),
+              sensor.humidity(),
+              sensor.buf))
+    except OSError:
+        print('Failed to measure')
+```
