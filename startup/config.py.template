@@ -1,0 +1,2 @@
+wlanSSID = b'my-network'
+wlanPass = 'superSecretPassword'

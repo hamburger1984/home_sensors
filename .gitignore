@@ -121,3 +121,6 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
+
+#####=== Custom Ignores ===#####
+config.py
