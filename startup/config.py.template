@@ -1,2 +1,8 @@
 wlanSSID = b'my-network'
-wlanPass = 'superSecretPassword'
+wlanPass = 'my-wifi-password'
+
+mqttHost = 'localhost'
+mqttSSL = False
+mqttUser = ''
+mqttPass = ''
+mqttTopicRoot = '/sensors'
