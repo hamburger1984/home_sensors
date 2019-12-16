@@ -1,7 +1,7 @@
 from machine import unique_id
 from config import mqttHost, mqttSSL, mqttUser, mqttPass, mqttTopicRoot
 
-ID = ''.join('{:2x}'.format(b) for b in unique_id())
+ID = ''.join('{:02x}'.format(b) for b in unique_id())
 
 def check_requirements():
     import upip
@@ -35,6 +35,7 @@ def connect():
                    user=mqttUser, password=mqttPass)
     c.DEBUG = True
     if not c.connect():
+        print('connected, will publish to {}/{}/#'.format(mqttTopicRoot, ID))
         c.set_last_will('{}/{}/status'.format(mqttTopicRoot, ID), 'offline', retain=True)
         c.publish('{}/{}/status'.format(mqttTopicRoot, ID), 'connected', retain=True)
         return c

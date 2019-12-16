@@ -43,7 +43,7 @@ def start():
         timer.deinit()
 
     t = Timer(-1)
-    t.init(period=20000, callback=callback)
+    t.init(period=30000, callback=callback)
 
     t2 = Timer(-2)
     t2.init(mode=Timer.ONE_SHOT, period=750, callback=callback)

@@ -9,13 +9,20 @@
 # ..and set wlanSSID and wlanPass for your network.
 import config
 import network
+from time import sleep
 
 n = network.WLAN(network.STA_IF)
-n.active(True)
+if not n.active():
+    n.active(True)
 
-s = n.scan()
-for (ssid, bssid, channel, RSSI, authmode, hidden) in s:
-    if ssid == config.wlanSSID:
-        print('connecting to {0} on channel {1}..'.format(ssid, channel))
-        n.connect(ssid, config.wlanPass)
-        break
+if not n.isconnected():
+    s = n.scan()
+    for (ssid, bssid, channel, RSSI, authmode, hidden) in s:
+        if ssid == config.wlanSSID:
+            print('connecting to {0} on channel {1}..'.format(ssid, channel))
+            n.connect(ssid, config.wlanPass)
+            waiting = 0
+            while waiting < 10 and not n.isconnected():
+                sleep(1)
+                waiting = waiting + 1
+            break
